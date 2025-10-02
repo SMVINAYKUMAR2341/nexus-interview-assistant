@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Radio, Button, Progress, Space, Tag, Modal } from 'antd';
+import { Card, Radio, Button, Progress, Space, Tag, Modal, Input } from 'antd';
 import { 
   ClockCircleOutlined, 
   CheckCircleOutlined, 
@@ -14,8 +14,11 @@ import { generateInterviewQuestion, evaluateAnswer as evaluateAnswerGemini } fro
 import { evaluateAnswerWithAI } from '../lib/aiService';
 import '../styles/QuizInterface.css';
 
+const { TextArea } = Input;
+
 const QuizInterface = ({ candidateId }) => {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [textAnswer, setTextAnswer] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [timeLeft, setTimeLeft] = useState(null);
   const [isTimerActive, setIsTimerActive] = useState(false);
@@ -70,6 +73,7 @@ const QuizInterface = ({ candidateId }) => {
     if (activeCandidate?.status === 'pending' && activeCandidate?.chatHistory?.length === 0) {
       // Assessment has been reset - clear all local state
       setSelectedAnswer(null);
+      setTextAnswer('');
       setIsSubmitting(false);
       setTimeLeft(null);
       setIsTimerActive(false);
@@ -151,14 +155,22 @@ const QuizInterface = ({ candidateId }) => {
   };
 
   const handleSubmit = async (isTimeout = false) => {
-    if (!selectedAnswer && !isTimeout) return;
+    // Check if answer is provided based on question difficulty
+    const isHardQuestion = currentConfig.difficulty === 'hard';
+    if (!isTimeout && !isHardQuestion && !selectedAnswer) return;
+    if (!isTimeout && isHardQuestion && !textAnswer.trim()) return;
 
     setIsSubmitting(true);
     setIsTimerActive(false);
 
-    const answerText = isTimeout 
-      ? 'No answer submitted (Time out)' 
-      : currentQuestion?.options?.find(opt => opt.id === selectedAnswer)?.text || selectedAnswer;
+    let answerText;
+    if (isTimeout) {
+      answerText = 'No answer submitted (Time out)';
+    } else if (isHardQuestion) {
+      answerText = textAnswer.trim();
+    } else {
+      answerText = currentQuestion?.options?.find(opt => opt.id === selectedAnswer)?.text || selectedAnswer;
+    }
 
     // Add user answer to chat
     addChatMessage(candidateId, {
@@ -198,6 +210,8 @@ const QuizInterface = ({ candidateId }) => {
       // Move to next question or finish
       if (currentQuestionIndex < totalQuestions - 1) {
         setTimeout(() => {
+          setSelectedAnswer(null);
+          setTextAnswer('');
           generateNextQuestion(currentQuestionIndex + 1);
         }, 2000);
       } else {
@@ -418,7 +432,8 @@ const QuizInterface = ({ candidateId }) => {
             {currentQuestion?.question || 'Loading question...'}
           </div>
 
-          {currentQuestion?.options && (
+          {/* MCQ Options for Easy and Medium Questions */}
+          {currentConfig.difficulty !== 'hard' && currentQuestion?.options && (
             <div className="quiz-options">
               <Radio.Group 
                 onChange={(e) => setSelectedAnswer(e.target.value)}
@@ -441,12 +456,46 @@ const QuizInterface = ({ candidateId }) => {
             </div>
           )}
 
+          {/* Text Input for Hard Questions */}
+          {currentConfig.difficulty === 'hard' && (
+            <div className="quiz-text-input">
+              <TextArea
+                value={textAnswer}
+                onChange={(e) => setTextAnswer(e.target.value)}
+                placeholder="Type your detailed answer here..."
+                autoSize={{ minRows: 6, maxRows: 12 }}
+                disabled={isSubmitting}
+                className="quiz-textarea"
+                style={{
+                  background: 'rgba(30, 41, 59, 0.5)',
+                  border: '1px solid rgba(148, 163, 184, 0.2)',
+                  borderRadius: '12px',
+                  color: '#e2e8f0',
+                  fontSize: '15px',
+                  padding: '16px',
+                  resize: 'none'
+                }}
+              />
+              <div style={{ 
+                marginTop: '8px', 
+                fontSize: '12px', 
+                color: '#94a3b8',
+                textAlign: 'right' 
+              }}>
+                {textAnswer.length} characters
+              </div>
+            </div>
+          )}
+
           <div className="quiz-actions">
             <Button
               type="primary"
               size="large"
               onClick={() => handleSubmit(false)}
-              disabled={!selectedAnswer || isSubmitting}
+              disabled={
+                (currentConfig.difficulty === 'hard' ? !textAnswer.trim() : !selectedAnswer) || 
+                isSubmitting
+              }
               loading={isSubmitting}
               className="quiz-submit-btn"
             >
@@ -454,7 +503,10 @@ const QuizInterface = ({ candidateId }) => {
             </Button>
             <Button
               size="large"
-              onClick={() => setSelectedAnswer(null)}
+              onClick={() => {
+                setSelectedAnswer(null);
+                setTextAnswer('');
+              }}
               disabled={isSubmitting}
               className="quiz-reset-btn"
             >

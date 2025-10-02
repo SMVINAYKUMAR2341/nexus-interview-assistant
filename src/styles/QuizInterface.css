@@ -3,13 +3,15 @@
 .quiz-container {
   display: flex;
   height: 100vh;
+  max-height: 100vh;
   background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0f1729 100%);
   overflow: hidden;
 }
 
 /* Left Sidebar - Question Navigator */
 .quiz-sidebar {
-  width: 280px;
+  width: 240px;
+  min-width: 240px;
   background: rgba(15, 23, 42, 0.9);
   border-right: 1px solid rgba(88, 166, 255, 0.2);
   display: flex;
@@ -18,8 +20,9 @@
 }
 
 .quiz-sidebar-header {
-  padding: 24px 20px;
+  padding: 16px 16px;
   border-bottom: 1px solid rgba(88, 166, 255, 0.15);
+  flex-shrink: 0;
 }
 
 .quiz-sidebar-header h3 {
@@ -155,10 +158,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 32px;
+  padding: 8px 16px;
   background: rgba(15, 23, 42, 0.9);
   border-bottom: 1px solid rgba(88, 166, 255, 0.15);
   backdrop-filter: blur(20px);
+  flex-shrink: 0;
+  min-height: 50px;
 }
 
 .quiz-progress-text {
@@ -197,28 +202,32 @@
 /* Question Card */
 .quiz-question-card {
   flex: 1;
-  margin: 24px 32px;
+  margin: 12px 16px;
   background: rgba(15, 23, 42, 0.7) !important;
   border: 1px solid rgba(88, 166, 255, 0.2) !important;
   border-radius: 16px !important;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
   backdrop-filter: blur(20px);
   overflow-y: auto;
+  max-height: calc(100vh - 120px);
+  min-height: 0;
 }
 
 .quiz-question-card .ant-card-body {
-  padding: 32px;
+  padding: 16px;
   height: 100%;
   display: flex;
   flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .quiz-question-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
-  padding-bottom: 16px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
   border-bottom: 1px solid rgba(88, 166, 255, 0.15);
 }
 
@@ -241,18 +250,20 @@
 
 .quiz-question-text {
   color: #e0e7ff;
-  font-size: 16px;
-  line-height: 1.8;
-  margin-bottom: 32px;
-  padding: 20px;
+  font-size: 15px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  padding: 16px;
   background: rgba(88, 166, 255, 0.05);
   border-left: 3px solid #58a6ff;
   border-radius: 8px;
 }
 
 .quiz-options {
+  margin-bottom: 16px;
+  max-height: calc(100vh - 350px);
+  overflow-y: auto;
   flex: 1;
-  margin-bottom: 24px;
 }
 
 .quiz-radio-group {
@@ -262,7 +273,7 @@
 .quiz-option {
   display: flex !important;
   align-items: center;
-  padding: 16px 20px !important;
+  padding: 12px 16px !important;
   background: rgba(15, 23, 42, 0.5) !important;
   border: 2px solid rgba(88, 166, 255, 0.2) !important;
   border-radius: 12px !important;
@@ -317,14 +328,15 @@
 .quiz-actions {
   display: flex;
   gap: 16px;
-  padding-top: 24px;
+  padding-top: 16px;
+  margin-top: auto;
   border-top: 1px solid rgba(88, 166, 255, 0.15);
 }
 
 .quiz-submit-btn {
   flex: 1;
-  height: 48px !important;
-  font-size: 16px !important;
+  height: 44px !important;
+  font-size: 15px !important;
   font-weight: 600 !important;
   background: linear-gradient(135deg, #58a6ff 0%, #7c3aed 100%) !important;
   border: none !important;
@@ -338,8 +350,8 @@
 }
 
 .quiz-reset-btn {
-  height: 48px !important;
-  font-size: 16px !important;
+  height: 44px !important;
+  font-size: 15px !important;
   font-weight: 600 !important;
   background: rgba(88, 166, 255, 0.1) !important;
   border: 1px solid rgba(88, 166, 255, 0.3) !important;
@@ -456,6 +468,34 @@
   font-size: 14px;
   text-transform: uppercase;
   letter-spacing: 1px;
+}
+
+/* Text Input for Hard Questions */
+.quiz-text-input {
+  margin: 20px 0;
+  max-height: calc(100vh - 450px);
+  overflow-y: auto;
+}
+
+.quiz-textarea {
+  width: 100%;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  max-height: calc(100vh - 480px) !important;
+}
+
+.quiz-textarea:hover {
+  border-color: rgba(88, 166, 255, 0.4) !important;
+}
+
+.quiz-textarea:focus {
+  border-color: #58a6ff !important;
+  box-shadow: 0 0 0 2px rgba(88, 166, 255, 0.2) !important;
+  background: rgba(30, 41, 59, 0.7) !important;
+}
+
+.quiz-textarea::placeholder {
+  color: #64748b;
 }
 
 /* Animations */
