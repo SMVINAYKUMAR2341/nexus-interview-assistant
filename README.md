@@ -23,27 +23,6 @@ Screenshots
 
 ![Screenshot 10](https://raw.githubusercontent.com/SMVINAYKUMAR2341/nexus-interview-assistant/main/{E4B48908-607D-43B8-BF84-CAF20F057F98}.png)
 
-<div align="center">
-
-<table>
-  <tr>
-    <td><img src="https://raw.githubusercontent.com/SMVINAYKUMAR2341/nexus-interview-assistant/main/{1B5684B2-40B7-47D1-A91F-73FD9603A550}.png" width="300" alt="Screenshot 1"></td>
-    <td><img src="https://raw.githubusercontent.com/SMVINAYKUMAR2341/nexus-interview-assistant/main/{377C86F5-D516-4A20-B537-EA98227BB657}.png" width="300" alt="Screenshot 2"></td>
-    <td><img src="https://raw.githubusercontent.com/SMVINAYKUMAR2341/nexus-interview-assistant/main/{401E89C6-4507-4AE4-A0E2-2423B0D89B12}.png" width="300" alt="Screenshot 3"></td>
-    <td><img src="https://raw.githubusercontent.com/SMVINAYKUMAR2341/nexus-interview-assistant/main/{4383CEFF-AEB7-4B20-9681-E57E3FB52698}.png" width="300" alt="Screenshot 4"></td>
-    <td><img src="https://raw.githubusercontent.com/SMVINAYKUMAR2341/nexus-interview-assistant/main/{49F7D124-FCFB-4B2C-8F64-1193D85B416B}.png" width="300" alt="Screenshot 5"></td>
-  </tr>
-  <tr>
-    <td><img src="https://raw.githubusercontent.com/SMVINAYKUMAR2341/nexus-interview-assistant/main/{8B087575-A1A2-4DF9-B092-3DA349CBD158}.png" width="300" alt="Screenshot 6"></td>
-    <td><img src="https://raw.githubusercontent.com/SMVINAYKUMAR2341/nexus-interview-assistant/main/{90BC9DD1-0738-440F-82B2-EAE3EFAC09D1}.png" width="300" alt="Screenshot 7"></td>
-    <td><img src="https://raw.githubusercontent.com/SMVINAYKUMAR2341/nexus-interview-assistant/main/{9DE10750-2440-40A3-9B42-0220DF0BADF7}.png" width="300" alt="Screenshot 8"></td>
-    <td><img src="https://raw.githubusercontent.com/SMVINAYKUMAR2341/nexus-interview-assistant/main/{C748C2F0-1F64-4AF3-8810-12755FE044D5}.png" width="300" alt="Screenshot 9"></td>
-    <td><img src="https://raw.githubusercontent.com/SMVINAYKUMAR2341/nexus-interview-assistant/main/{E4B48908-607D-43B8-BF84-CAF20F057F98}.png" width="300" alt="Screenshot 10"></td>
-  </tr>
-</table>
-
-</div>
-
 
 ## 📁 Root Directory Structure
 
