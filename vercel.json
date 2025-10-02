@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "installCommand": "npm install --legacy-peer-deps && cd backend && npm install --legacy-peer-deps",
   "builds": [
     {
       "src": "package.json",
@@ -10,10 +11,7 @@
     },
     {
       "src": "backend/server.js",
-      "use": "@vercel/node",
-      "config": {
-        "installCommand": "cd backend && npm install --legacy-peer-deps"
-      }
+      "use": "@vercel/node"
     }
   ],
   "routes": [
