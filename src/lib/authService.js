@@ -4,7 +4,16 @@
 class AuthService {
   constructor() {
     // Use import.meta.env for Vite instead of process.env
-    this.baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+    // In production (Vercel), use relative URLs to work with the same domain
+    if (import.meta.env.PROD) {
+      // In production, use relative URL (same domain as frontend)
+      this.baseURL = '/api';
+    } else {
+      // In development, use the full localhost URL
+      this.baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+    }
+    
+    console.log('AuthService initialized with baseURL:', this.baseURL);
     this.token = localStorage.getItem('crisp_auth_token');
     this.pendingRequests = new Map(); // Track pending requests to prevent duplicates
   }

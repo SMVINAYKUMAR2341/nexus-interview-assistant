@@ -1,7 +1,15 @@
 // AI service using DeepSeek API for accurate evaluations
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+// In production (Vercel), use relative URLs to work with the same domain
+let API_URL;
+if (import.meta.env.PROD) {
+  // In production, use relative URL (same domain as frontend)
+  API_URL = '/api';
+} else {
+  // In development, use the full localhost URL
+  API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+}
 
 // Fallback question pools for offline mode
 const QUESTION_POOLS = {

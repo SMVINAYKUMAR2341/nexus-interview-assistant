@@ -16,7 +16,15 @@ class ChatService {
       return;
     }
 
-    const SOCKET_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
+    // In production (Vercel), use relative URLs to work with the same domain
+    let SOCKET_URL;
+    if (import.meta.env.PROD) {
+      // In production, use the same domain as frontend for WebSocket
+      SOCKET_URL = window.location.origin;
+    } else {
+      // In development, use the full localhost URL
+      SOCKET_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
+    }
 
     try {
       this.socket = io(SOCKET_URL, {

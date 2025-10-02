@@ -3,7 +3,14 @@
 class FileUploadService {
   constructor() {
     // Use import.meta.env for Vite instead of process.env
-    this.baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+    // In production (Vercel), use relative URLs to work with the same domain
+    if (import.meta.env.PROD) {
+      // In production, use relative URL (same domain as frontend)
+      this.baseURL = '/api';
+    } else {
+      // In development, use the full localhost URL
+      this.baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+    }
   }
 
   // Get authentication headers
