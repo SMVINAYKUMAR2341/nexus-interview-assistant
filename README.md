@@ -1,6 +1,38 @@
 # 🚀 NEXUS - AI Interview Assistant
 
 A lightweight React application with AI-powered interview features using **DeepSeek API**.
+# 📸 Project Screenshots
+
+## Screenshot 1
+![Screenshot 1](https://raw.githubusercontent.com/<your-username>/<your-repo>/main/{1B5684B2-40B7-47D1-A91F-73FD9603A550}.png)
+
+## Screenshot 2
+![Screenshot 2](https://raw.githubusercontent.com/<your-username>/<your-repo>/main/{377C86F5-D516-4A20-B537-EA98227BB657}.png)
+
+## Screenshot 3
+![Screenshot 3](https://raw.githubusercontent.com/<your-username>/<your-repo>/main/{401E89C6-4507-4AE4-A0E2-2423B0D89B12}.png)
+
+## Screenshot 4
+![Screenshot 4](https://raw.githubusercontent.com/<your-username>/<your-repo>/main/{4383CEFF-AEB7-4B20-9681-E57E3FB52698}.png)
+
+## Screenshot 5
+![Screenshot 5](https://raw.githubusercontent.com/<your-username>/<your-repo>/main/{49F7D124-FCFB-4B2C-8F64-1193D85B416B}.png)
+
+## Screenshot 6
+![Screenshot 6](https://raw.githubusercontent.com/<your-username>/<your-repo>/main/{8B087575-A1A2-4DF9-B092-3DA349CBD158}.png)
+
+## Screenshot 7
+![Screenshot 7](https://raw.githubusercontent.com/<your-username>/<your-repo>/main/{90BC9DD1-0738-440F-82B2-EAE3EFAC09D1}.png)
+
+## Screenshot 8
+![Screenshot 8](https://raw.githubusercontent.com/<your-username>/<your-repo>/main/{9DE10750-2440-40A3-9B42-0220DF0BADF7}.png)
+
+## Screenshot 9
+![Screenshot 9](https://raw.githubusercontent.com/<your-username>/<your-repo>/main/{C748C2F0-1F64-4AF3-8810-12755FE044D5}.png)
+
+## Screenshot 10
+![Screenshot 10](https://raw.githubusercontent.com/<your-username>/<your-repo>/main/{E4B48908-607D-43B8-BF84-CAF20F057F98}.png)
+
 
 ## ✨ Features
 
