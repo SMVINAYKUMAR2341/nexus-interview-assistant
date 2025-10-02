@@ -159,8 +159,12 @@ const AuthPage = () => {
   };
 
   // Handle Google sign in error
-  const handleGoogleError = () => {
-    console.error('Google sign in failed');
+  const handleGoogleError = (error) => {
+    console.error('Google sign in failed:', error);
+    // You can add a user-friendly error message here
+    const errorMessage = 'Google sign-in failed. Please try again or use email/password login.';
+    // If you have a way to show errors to the user, do it here
+    console.log('User-friendly error:', errorMessage);
   };
 
   // Update overlay content based on panel state
