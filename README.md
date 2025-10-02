@@ -2,19 +2,6 @@
 
 A lightweight React application with AI-powered interview features using **DeepSeek API**.
 
-## Screenshots
-
-### 1. Role Selection and Sign In / Sign Up
-![Role Selection and Sign In](assets/screenshots/screenshot1.png)
-
-### 2. AI Interviewer Dashboard
-![AI Interviewer Dashboard](assets/screenshots/screenshot2.png)
-
-### 3. Resume Analytics and Candidate Details
-![Resume Analytics and Candidate Details](assets/screenshots/screenshot3.png)
-
-### 4. Assessment Completion
-![Assessment Completion](assets/screenshots/screenshot4.png)
 ## ✨ Features
 
 ### For Interviewee
