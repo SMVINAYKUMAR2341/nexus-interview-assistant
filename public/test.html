@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 50px;
+            background-color: #f0f2f5;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        h1 { color: #1890ff; }
+        .status { color: #52c41a; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Crisp Interview Assistant</h1>
+        <p class="status">✅ Basic HTML Test Working!</p>
+        <p>Server Status:</p>
+        <ul style="text-align: left; display: inline-block;">
+            <li>Frontend: http://localhost:5174</li>
+            <li>Backend: http://localhost:5000</li>
+            <li>Vite: Running</li>
+        </ul>
+        <hr>
+        <p style="font-size: 14px; color: #666;">
+            If you see this page, the server is working.<br>
+            The issue might be with React rendering.
+        </p>
+    </div>
+    
+    <script>
+        console.log('Static HTML page loaded');
+        document.body.style.backgroundColor = '#e6f7ff';
+        setTimeout(() => {
+            document.querySelector('.status').textContent = '✅ JavaScript Working Too!';
+        }, 1000);
+    </script>
+</body>
+</html>

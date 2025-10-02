@@ -1,0 +1,33 @@
+John Doe
+Email: john.doe@example.com
+Phone: 1234567890
+
+PROFESSIONAL SUMMARY
+Full Stack Developer with 5 years of experience in building scalable web applications.
+
+SKILLS
+- JavaScript, TypeScript, Python
+- React, Node.js, Express
+- MongoDB, PostgreSQL
+- Docker, AWS, Git
+
+EXPERIENCE
+Senior Full Stack Developer
+Tech Company Inc. (2020 - Present)
+- Developed and maintained 10+ production web applications
+- Led a team of 5 developers
+- Implemented CI/CD pipelines
+
+Junior Developer
+StartUp Co. (2018 - 2020)
+- Built RESTful APIs using Node.js
+- Created responsive UIs with React
+- Collaborated with cross-functional teams
+
+EDUCATION
+Bachelor of Technology in Computer Science
+XYZ University (2014 - 2018)
+
+CERTIFICATIONS
+- AWS Certified Developer
+- MongoDB Certified Developer

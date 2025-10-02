@@ -1,0 +1,16 @@
+{
+  "name": "crisp-interview-setup",
+  "version": "1.0.0",
+  "description": "Setup script for Crisp Interview Assistant with MongoDB",
+  "scripts": {
+    "setup": "node setup.js",
+    "install-all": "npm install && cd backend && npm install",
+    "dev": "concurrently \"npm run dev\" \"cd backend && npm run dev\"",
+    "start-backend": "cd backend && npm run dev",
+    "start-frontend": "npm run dev",
+    "build": "npm run build && cd backend && npm install --production"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

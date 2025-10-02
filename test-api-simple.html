@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini API Quick Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            font-size: 28px;
+            color: #667eea;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .api-key-display {
+            background: #f7f7f7;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            word-break: break-all;
+            border-left: 4px solid #667eea;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .result {
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result.success {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            color: #155724;
+        }
+
+        .result.error {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            color: #721c24;
+        }
+
+        .result.loading {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            color: #856404;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .result-title {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .result-text {
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+
+        .steps {
+            background: #e8f4f8;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 4px solid #17a2b8;
+        }
+
+        .steps h3 {
+            color: #17a2b8;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .steps ol {
+            margin-left: 20px;
+        }
+
+        .steps li {
+            margin-bottom: 8px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 Gemini API Tester</h1>
+        <p class="subtitle">Quick verification for your Google Gemini API key</p>
+
+        <div class="api-key-display">
+            <strong>API Key:</strong> AIzaSyCws7KhsxoObBmTdaRLJXy_YRAmGaCleNQ
+        </div>
+
+        <button id="testBtn" onclick="testAPI()">🧪 Test Gemini API Connection</button>
+
+        <div id="result" class="result"></div>
+
+        <div class="steps">
+            <h3>📋 What This Test Does:</h3>
+            <ol>
+                <li>Connects to Google Gemini AI API</li>
+                <li>Sends a simple test prompt</li>
+                <li>Validates the response</li>
+                <li>Shows you if the API key is working</li>
+            </ol>
+        </div>
+    </div>
+
+    <script type="module">
+        import { GoogleGenerativeAI } from 'https://esm.run/@google/generative-ai';
+
+        window.testAPI = async function() {
+            const resultDiv = document.getElementById('result');
+            const testBtn = document.getElementById('testBtn');
+            
+            // Show loading state
+            resultDiv.className = 'result loading';
+            resultDiv.style.display = 'flex';
+            resultDiv.innerHTML = `
+                <div class="spinner"></div>
+                <div>Testing API connection... Please wait.</div>
+            `;
+            testBtn.disabled = true;
+
+            const apiKey = 'AIzaSyCws7KhsxoObBmTdaRLJXy_YRAmGaCleNQ';
+
+            try {
+                console.log('🔄 Initializing Google Gemini AI...');
+                const genAI = new GoogleGenerativeAI(apiKey);
+                
+                console.log('🔄 Getting model...');
+                const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+                
+                console.log('🔄 Sending test prompt...');
+                const startTime = Date.now();
+                
+                const result = await model.generateContent('Say "Hello! The API is working perfectly!" in a friendly way.');
+                const endTime = Date.now();
+                const responseTime = endTime - startTime;
+                
+                console.log('✅ Response received:', result);
+                
+                const response = await result.response;
+                const text = response.text();
+                
+                console.log('✅ Response text:', text);
+
+                // Success!
+                resultDiv.className = 'result success';
+                resultDiv.innerHTML = `
+                    <div>
+                        <div class="result-title">✅ SUCCESS! Your Gemini API Key is Working!</div>
+                        <div class="result-text">
+<strong>Response Time:</strong> ${responseTime}ms
+
+<strong>API Response:</strong>
+${text}
+
+<strong>Status:</strong> 
+✓ API Key is valid
+✓ Connection successful
+✓ Model responding correctly
+✓ All systems operational
+
+<strong>What This Means:</strong>
+Your Crisp Interview Assistant is now powered by real Google Gemini AI! You'll get:
+• Unique interview questions for each candidate
+• Intelligent answer evaluation with detailed feedback
+• Smart chatbot conversations (interviewer & interviewee modes)
+• AI-generated candidate summaries
+
+🎉 Everything is working perfectly! Start using your interview assistant with confidence.
+                        </div>
+                    </div>
+                `;
+
+            } catch (error) {
+                console.error('❌ Error:', error);
+                
+                let errorMessage = '';
+                let solutions = '';
+
+                if (error.message?.includes('API_KEY_INVALID') || error.message?.includes('API key')) {
+                    errorMessage = 'Invalid API Key';
+                    solutions = `
+The API key format appears correct, but Google is rejecting it. This usually means:
+
+1. The API key might be revoked or expired
+2. Gemini API might not be enabled in your Google Cloud project
+3. The key might be restricted to different domains/IPs
+
+<strong>Solutions:</strong>
+• Go to Google AI Studio (https://makersuite.google.com/app/apikey)
+• Verify the API key is still active
+• Generate a new API key if needed
+• Ensure "Generative Language API" is enabled in Google Cloud Console
+• Check API key restrictions (if any)
+                    `;
+                } else if (error.message?.includes('quota') || error.message?.includes('RESOURCE_EXHAUSTED')) {
+                    errorMessage = 'API Quota Exceeded';
+                    solutions = `
+You've reached your API usage limit.
+
+<strong>Solutions:</strong>
+• Check your quota at: https://console.cloud.google.com/apis/api/generativelanguage.googleapis.com/quotas
+• Wait for quota to reset (usually resets daily)
+• Upgrade your Google Cloud plan if needed
+• Use the built-in fallback system (app will work with keyword-based responses)
+                    `;
+                } else if (error.message?.includes('network') || error.message?.includes('fetch')) {
+                    errorMessage = 'Network Connection Error';
+                    solutions = `
+Cannot reach Google's servers.
+
+<strong>Solutions:</strong>
+• Check your internet connection
+• Disable VPN/proxy temporarily
+• Check if your firewall is blocking the connection
+• Try again in a few moments
+                    `;
+                } else {
+                    errorMessage = 'Unknown Error';
+                    solutions = `
+An unexpected error occurred.
+
+<strong>Error Details:</strong>
+${error.message || error.toString()}
+
+<strong>Solutions:</strong>
+• Try refreshing and testing again
+• Check browser console (F12) for more details
+• Ensure you're using a modern browser (Chrome, Edge, Firefox)
+• Contact support if the issue persists
+                    `;
+                }
+
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `
+                    <div>
+                        <div class="result-title">❌ ${errorMessage}</div>
+                        <div class="result-text">${solutions}</div>
+                    </div>
+                `;
+            } finally {
+                testBtn.disabled = false;
+            }
+        };
+
+        // Auto-run test on page load
+        console.log('🚀 Page loaded, ready to test!');
+        document.getElementById('testBtn').innerHTML = '🧪 Click to Test Gemini API Connection';
+    </script>
+</body>
+</html>

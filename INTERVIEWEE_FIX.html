@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interviewee Tab Issue - Quick Fix</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        .issue-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }
+
+        .issue-box h2 {
+            color: #856404;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .steps {
+            background: #e8f4f8;
+            border-left: 4px solid #17a2b8;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .steps h3 {
+            color: #17a2b8;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .steps ol {
+            margin-left: 20px;
+        }
+
+        .steps li {
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        .success-box {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .success-box h3 {
+            color: #155724;
+            margin-bottom: 10px;
+        }
+
+        .code {
+            background: #f4f4f4;
+            padding: 12px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+
+        .warning {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #721c24;
+        }
+
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .checklist {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .checklist h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .checklist label {
+            display: block;
+            padding: 8px 0;
+            cursor: pointer;
+        }
+
+        .checklist input[type="checkbox"] {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .tip {
+            background: #e7f3ff;
+            border-left: 4px solid #0066cc;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 6px;
+        }
+
+        .tip strong {
+            color: #0066cc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Interviewee Tab Not Opening?</h1>
+        <p class="subtitle">Quick diagnostic and fix guide</p>
+
+        <div class="issue-box">
+            <h2>⚠️ Issue Detected</h2>
+            <p>The Interviewee tab is not opening or showing correctly. Don't worry - we've added error protection and here's how to fix it!</p>
+        </div>
+
+        <div class="steps">
+            <h3>🚀 Quick Fix (Try This First)</h3>
+            <ol>
+                <li><strong>Hard Refresh the Browser</strong>
+                    <div class="code">Press: Ctrl + Shift + R (Windows) or Ctrl + F5</div>
+                    This clears the cache and reloads everything fresh.
+                </li>
+                <li><strong>Check Browser Console</strong>
+                    <div class="code">Press F12 to open Developer Tools → Go to Console tab</div>
+                    Look for error messages in red. Should see:<br>
+                    <span style="color: green;">✓ "🎯 IntervieweeView component rendering"</span>
+                </li>
+                <li><strong>Try Another Browser</strong>
+                    If using Chrome, try Edge or Firefox (or vice versa)
+                </li>
+            </ol>
+        </div>
+
+        <div class="success-box">
+            <h3>✅ What I Just Fixed</h3>
+            <ul>
+                <li>✓ Added <strong>Error Boundaries</strong> around both Interviewee and Interviewer tabs</li>
+                <li>✓ Added <strong>console logging</strong> for better debugging</li>
+                <li>✓ Improved error handling in component initialization</li>
+                <li>✓ Created comprehensive troubleshooting guide</li>
+            </ul>
+            <p style="margin-top: 15px;">
+                <strong>Now if something crashes, you'll see a friendly error message with a "Reload" button instead of a blank page!</strong>
+            </p>
+        </div>
+
+        <div class="tip">
+            <strong>💡 Pro Tip:</strong> After you hard refresh, open the console (F12) and look for:<br>
+            <span style="color: green; font-family: monospace;">🎯 IntervieweeView component rendering</span><br>
+            If you see this, the component is loading correctly!
+        </div>
+
+        <div class="steps">
+            <h3>🔍 Diagnostic Checklist</h3>
+            <div class="checklist">
+                <label>
+                    <input type="checkbox"> Dev server is running (terminal shows "VITE ready at localhost:5173")
+                </label>
+                <label>
+                    <input type="checkbox"> Can see the main dashboard after login
+                </label>
+                <label>
+                    <input type="checkbox"> Can see both "Interviewee" and "Interviewer Dashboard" tabs
+                </label>
+                <label>
+                    <input type="checkbox"> Clicking "Interviewer Dashboard" tab works fine
+                </label>
+                <label>
+                    <input type="checkbox"> Browser console shows no red error messages
+                </label>
+                <label>
+                    <input type="checkbox"> Tried hard refresh (Ctrl+Shift+R)
+                </label>
+            </div>
+        </div>
+
+        <div class="steps">
+            <h3>📋 If Still Not Working - Try These</h3>
+            <ol>
+                <li><strong>Clear Browser Data</strong>
+                    <div class="code">Ctrl + Shift + Delete → Clear "Cookies" and "Cached files"</div>
+                </li>
+                <li><strong>Restart Dev Server</strong>
+                    <div class="code">
+                        # In terminal, stop server (Ctrl+C)<br>
+                        npm run dev
+                    </div>
+                </li>
+                <li><strong>Check Zustand Store</strong>
+                    <div class="code">
+                        # In browser console (F12), type:<br>
+                        localStorage.getItem('interview-store')
+                    </div>
+                    If you see weird data, clear it:
+                    <div class="code">
+                        localStorage.clear()<br>
+                        # Then refresh browser
+                    </div>
+                </li>
+                <li><strong>Reinstall Dependencies</strong>
+                    <div class="code">
+                        npm install<br>
+                        npm run dev
+                    </div>
+                </li>
+            </ol>
+        </div>
+
+        <div class="warning">
+            <strong>🚨 Common Errors & Solutions</strong>
+            <ul style="margin-top: 10px; margin-left: 20px;">
+                <li><strong>"Cannot read property of undefined"</strong> → Check if you're logged in properly</li>
+                <li><strong>"Module not found"</strong> → Run <code>npm install</code></li>
+                <li><strong>"GoogleGenerativeAI is not a constructor"</strong> → Gemini API issue (app will use fallback)</li>
+                <li><strong>Blank page</strong> → Open console (F12), check for errors, hard refresh</li>
+            </ul>
+        </div>
+
+        <div class="success-box">
+            <h3>🎯 What Should Work Now</h3>
+            <p>After the hard refresh, you should be able to:</p>
+            <ul style="margin-left: 20px; margin-top: 10px;">
+                <li>✓ Click the "Interviewee" tab</li>
+                <li>✓ See "Welcome to Crisp Interview Assistant" message</li>
+                <li>✓ Upload a resume</li>
+                <li>✓ Start an interview</li>
+                <li>✓ See AI-generated questions</li>
+                <li>✓ Submit answers and get AI evaluations</li>
+            </ul>
+        </div>
+
+        <div class="tip">
+            <strong>📝 Need More Help?</strong><br>
+            Check the detailed <strong>TROUBLESHOOTING.md</strong> file in your project folder for comprehensive solutions to all possible issues.
+        </div>
+
+        <div style="text-align: center; margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 8px;">
+            <h3 style="margin-bottom: 15px;">Ready to Test?</h3>
+            <p style="margin-bottom: 15px;">Make sure your dev server is running, then:</p>
+            <a href="http://localhost:5173" class="btn" target="_blank">
+                🚀 Open App in Browser
+            </a>
+        </div>
+
+        <div style="margin-top: 30px; padding: 20px; background: #fff; border: 2px dashed #667eea; border-radius: 8px; text-align: center;">
+            <h4 style="color: #667eea; margin-bottom: 10px;">Quick Verification</h4>
+            <p style="font-size: 14px; color: #666;">
+                Open Console (F12) and type this command to check if everything is loaded:
+            </p>
+            <div class="code" style="text-align: left; margin: 15px auto; max-width: 400px;">
+                console.log('Store:', window.localStorage.getItem('interview-store'));
+            </div>
+            <p style="font-size: 14px; color: #666; margin-top: 10px;">
+                You should see JSON data with candidates array and state info
+            </p>
+        </div>
+    </div>
+</body>
+</html>

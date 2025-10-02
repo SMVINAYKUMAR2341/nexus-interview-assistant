@@ -1,0 +1,310 @@
+/* Global styles for Crisp Interview Assistant */
+:root {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  
+  color-scheme: light;
+  color: rgba(0, 0, 0, 0.88);
+  background-color: #ffffff;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.ant-layout {
+  min-height: 100vh;
+}
+
+/* Custom Scrollbar for entire app */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.5);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #58a6ff 0%, #7c3aed 100%);
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(88, 166, 255, 0.3);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #7c3aed 0%, #ff6bed 100%);
+  box-shadow: 0 0 15px rgba(124, 58, 237, 0.5);
+}
+
+/* Neon Modal Styling */
+.ant-modal-content {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+  border: 1px solid rgba(88, 166, 255, 0.3) !important;
+  box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(88, 166, 255, 0.2) !important;
+}
+
+.ant-modal-header {
+  background: linear-gradient(135deg, #58a6ff 0%, #7c3aed 50%, #ff6bed 100%) !important;
+  border-bottom: 1px solid rgba(88, 166, 255, 0.3) !important;
+}
+
+.ant-modal-title {
+  color: white !important;
+  font-weight: 700 !important;
+}
+
+.ant-modal-close {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.ant-modal-close:hover {
+  color: white !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.ant-modal-body {
+  color: #e0e7ff !important;
+}
+
+/* Neon Tabs in Modal */
+.ant-tabs-tab {
+  color: #94a3b8 !important;
+}
+
+.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: #58a6ff !important;
+}
+
+.ant-tabs-ink-bar {
+  background: linear-gradient(90deg, #58a6ff, #7c3aed) !important;
+}
+
+.chat-container {
+  height: 70vh;
+  overflow-y: auto;
+  padding: 16px;
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.chat-message {
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  max-width: 80%;
+}
+
+.ai-message {
+  background-color: #f0f0f0;
+  margin-right: auto;
+}
+
+.user-message {
+  background-color: #1890ff;
+  color: white;
+  margin-left: auto;
+}
+
+.timer-display {
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.timer-running {
+  background-color: #fff2e8;
+  color: #fa8c16;
+}
+
+.timer-warning {
+  background-color: #fff1f0;
+  color: #ff4d4f;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+.resume-upload {
+  border: 2px dashed #d9d9d9;
+  border-radius: 8px;
+  padding: 32px;
+  text-align: center;
+  background-color: #fafafa;
+  cursor: pointer;
+  transition: border-color 0.3s;
+}
+
+.resume-upload:hover {
+  border-color: #1890ff;
+}
+
+.question-progress {
+  margin-bottom: 24px;
+}
+
+.candidate-card {
+  margin-bottom: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.candidate-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.score-badge {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.chat-history-modal .ant-modal-body {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+  .chat-message {
+    max-width: 95%;
+  }
+  
+  .timer-display {
+    font-size: 20px;
+  }
+}
+
+/* Neon Header Animations */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    filter: drop-shadow(0 0 10px rgba(88, 166, 255, 0.5));
+  }
+  50% {
+    filter: drop-shadow(0 0 20px rgba(88, 166, 255, 0.8));
+  }
+}
+
+@keyframes neonShift {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+@keyframes slideInFromLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Neon Tabs Styling */
+.neon-tabs .ant-tabs-nav {
+  margin-bottom: 0 !important;
+}
+
+.neon-tabs .ant-tabs-tab {
+  color: #94a3b8 !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  padding: 14px 24px !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  position: relative !important;
+  animation: slideInFromLeft 0.5s ease-out forwards;
+  opacity: 0;
+}
+
+.neon-tabs .ant-tabs-tab:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.neon-tabs .ant-tabs-tab:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.neon-tabs .ant-tabs-tab:hover {
+  color: #58a6ff !important;
+  transform: translateY(-2px);
+}
+
+.neon-tabs .ant-tabs-tab-active {
+  color: #fff !important;
+  background: linear-gradient(135deg, rgba(88, 166, 255, 0.15) 0%, rgba(124, 58, 237, 0.15) 100%) !important;
+  border-radius: 8px 8px 0 0 !important;
+}
+
+.neon-tabs .ant-tabs-tab-active .ant-tabs-tab-btn {
+  text-shadow: 0 0 10px rgba(88, 166, 255, 0.5) !important;
+}
+
+.neon-tabs .ant-tabs-ink-bar {
+  background: linear-gradient(90deg, #58a6ff 0%, #7c3aed 50%, #ff6bed 100%) !important;
+  height: 3px !important;
+  border-radius: 3px !important;
+  box-shadow: 0 0 15px rgba(88, 166, 255, 0.6), 0 0 30px rgba(124, 58, 237, 0.4) !important;
+}
+
+.neon-tabs .ant-tabs-content {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
