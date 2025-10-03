@@ -193,7 +193,7 @@ router.post('/:id/analyze', authenticate, async (req, res) => {
     }
 
     // Get file stream from GridFS
-    const fileStream = await fileUploadService.getFileStream(fileRecord.gridfsId);
+    const { stream: fileStream, file: gridfsFile } = await fileUploadService.getFileStream(fileRecord.gridfsId);
     
     // Collect file content
     const chunks = [];

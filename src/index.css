@@ -154,17 +154,26 @@ body {
 }
 
 .resume-upload {
-  border: 2px dashed #d9d9d9;
-  border-radius: 8px;
-  padding: 32px;
+  border: 2px dashed rgba(88, 166, 255, 0.4) !important;
+  border-radius: 12px !important;
+  padding: 24px 16px !important;
   text-align: center;
-  background-color: #fafafa;
+  background: rgba(15, 23, 42, 0.6) !important;
+  backdrop-filter: blur(10px);
   cursor: pointer;
-  transition: border-color 0.3s;
+  transition: all 0.3s ease;
+  color: #e2e8f0 !important;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .resume-upload:hover {
-  border-color: #1890ff;
+  border-color: rgba(88, 166, 255, 0.8) !important;
+  background: rgba(15, 23, 42, 0.8) !important;
+  box-shadow: 0 0 20px rgba(88, 166, 255, 0.3);
 }
 
 .question-progress {
@@ -192,11 +201,73 @@ body {
   overflow-y: auto;
 }
 
+/* Responsive Design for Welcome Screen */
+@media (max-width: 1200px) {
+  .neon-welcome-card {
+    max-width: 500px !important;
+    margin: 16px auto !important;
+    padding: 28px 20px !important;
+  }
+  
+  .neon-welcome-card h2 {
+    font-size: 24px !important;
+  }
+}
+
 @media (max-width: 768px) {
+  .interviewee-container {
+    padding: 8px !important;
+  }
+  
+  .neon-welcome-card {
+    max-width: 95% !important;
+    margin: 12px auto !important;
+    padding: 20px 16px !important;
+  }
+  
+  .neon-welcome-card h2 {
+    font-size: 22px !important;
+    margin-bottom: 12px !important;
+  }
+  
+  .neon-welcome-card p {
+    font-size: 14px !important;
+    margin-bottom: 20px !important;
+  }
+  
+  .resume-upload {
+    padding: 20px 12px !important;
+    min-height: 160px;
+  }
+  
   .chat-message {
     max-width: 95%;
   }
+}
+
+@media (max-width: 480px) {
+  .neon-welcome-card {
+    max-width: 98% !important;
+    margin: 8px auto !important;
+    padding: 16px 12px !important;
+  }
   
+  .neon-welcome-card h2 {
+    font-size: 20px !important;
+  }
+  
+  .neon-welcome-card p {
+    font-size: 13px !important;
+    margin-bottom: 16px !important;
+  }
+  
+  .resume-upload {
+    padding: 16px 8px !important;
+    min-height: 140px;
+  }
+}
+
+@media (max-width: 768px) {
   .timer-display {
     font-size: 20px;
   }

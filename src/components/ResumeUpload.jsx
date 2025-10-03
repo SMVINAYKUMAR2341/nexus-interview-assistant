@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
-import { Upload, Button, message, Progress, Card, List, Typography, Space, Tag } from 'antd';
-import { InboxOutlined, DeleteOutlined, DownloadOutlined, EyeOutlined } from '@ant-design/icons';
-import { parseResumeFile, checkMissingFields } from '../lib/resumeParser';
+import React, { useState, useEffect } from 'react';
+import { Upload, Button, message, Progress, Card, Typography, Popconfirm } from 'antd';
+import { InboxOutlined, DeleteOutlined } from '@ant-design/icons';
 import fileUploadService from '../lib/fileUploadService';
 import { useAuthStore } from '../store/useAuthStore';
 import DataCollectionModal from './DataCollectionModal';
@@ -13,32 +12,57 @@ const ResumeUpload = ({ onResumeUploaded, loading = false, showFileList = true }
   const { user } = useAuthStore();
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
-  const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [loadingFiles, setLoadingFiles] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [showDataModal, setShowDataModal] = useState(false);
   const [pendingData, setPendingData] = useState(null);
+  const [userFiles, setUserFiles] = useState([]);
 
-  // Load user's uploaded files on component mount
-  React.useEffect(() => {
-    if (user && user.role === 'Interviewee' && showFileList) {
+  // Load user's uploaded files
+  const loadUserFiles = async () => {
+    try {
+      if (user && user.role === 'Interviewee') {
+        const result = await fileUploadService.getFiles({ category: 'resume' });
+        if (result.success) {
+          setUserFiles(result.files || []);
+        }
+      }
+    } catch (error) {
+      console.error('Error loading user files:', error);
+    }
+  };
+
+  // Load files when component mounts or user changes
+  useEffect(() => {
+    if (showFileList) {
       loadUserFiles();
     }
   }, [user, showFileList]);
 
-  const loadUserFiles = async () => {
+  const handleClearAllFiles = async () => {
     try {
-      setLoadingFiles(true);
+      setIsDeleting(true);
       const result = await fileUploadService.getFiles({ category: 'resume' });
-      if (result.success) {
-        setUploadedFiles(result.files);
+      
+      if (result.success && result.files.length > 0) {
+        // Delete all resume files
+        for (const file of result.files) {
+          await fileUploadService.deleteFile(file._id);
+        }
+        message.success(`${result.files.length} file(s) deleted successfully`);
+        // Refresh the file list after deletion
+        await loadUserFiles();
+      } else {
+        message.info('No files to delete');
       }
     } catch (error) {
-      console.error('Error loading files:', error);
-      message.error('Failed to load uploaded files');
+      console.error('Error deleting files:', error);
+      message.error('Failed to delete files');
     } finally {
-      setLoadingFiles(false);
+      setIsDeleting(false);
     }
   };
+
+
 
   const handleUpload = async (file) => {
     try {
@@ -94,8 +118,52 @@ const ResumeUpload = ({ onResumeUploaded, loading = false, showFileList = true }
             throw new Error(uploadResult.message || 'Upload to database failed');
           }
 
+          console.log('Upload result:', uploadResult);
+          console.log('Upload result files:', uploadResult.files);
           message.success('File uploaded to database successfully!');
           setUploadProgress(60);
+
+          // Get the uploaded file ID for analysis
+          const uploadedFile = uploadResult.files && uploadResult.files[0];
+          console.log('Uploaded file object:', uploadedFile);
+          
+          if (!uploadedFile) {
+            console.error('No uploaded file in result:', uploadResult);
+            throw new Error('No uploaded file found in response');
+          }
+          
+          const fileId = uploadedFile._id || uploadedFile.id;
+          if (!fileId) {
+            console.error('No id or _id in uploaded file:', uploadedFile);
+            throw new Error(`Uploaded file missing id. Available keys: ${Object.keys(uploadedFile || {}).join(', ')}`);
+          }
+
+          // Analyze resume content with Perplexity AI via backend
+          setUploadProgress(70);
+          console.log('Starting AI analysis for file ID:', fileId);
+          const analysisResult = await fileUploadService.analyzeFile(fileId);
+          setUploadProgress(90);
+          
+          if (analysisResult.success) {
+            console.log('AI analysis successful:', analysisResult.analysis);
+            setUploadProgress(100);
+            
+            // Pass AI analysis data to parent component
+            onResumeUploaded(analysisResult.analysis);
+            loadingMessage();
+            message.success('Resume uploaded and analyzed successfully with AI!');
+
+            // Reload file list from MongoDB
+            if (showFileList && user && user.role === 'Interviewee') {
+              await loadUserFiles();
+            }
+          } else {
+            console.error('AI analysis failed:', analysisResult.error);
+            setUploadProgress(100);
+            loadingMessage();
+            message.error(`Failed to analyze resume with AI: ${analysisResult.error || 'Unknown error'}`);
+          }
+
         } catch (uploadError) {
           console.error('MongoDB upload error:', uploadError);
           console.error('Error details:', {
@@ -118,35 +186,6 @@ const ResumeUpload = ({ onResumeUploaded, loading = false, showFileList = true }
           return false;
         }
       }
-
-      // Parse resume content for AI analysis
-      setUploadProgress(70);
-      const parseResult = await parseResumeFile(file);
-      setUploadProgress(90);
-      
-      if (parseResult.success) {
-        // Check for missing fields
-        const missingFields = checkMissingFields(parseResult.data);
-        setUploadProgress(100);
-        
-        // Always pass data to parent component - it will handle missing fields via chatbot
-        onResumeUploaded(parseResult.data);
-        loadingMessage();
-        
-        if (missingFields.length > 0) {
-          message.success(`Resume uploaded successfully! Please provide missing information: ${missingFields.join(', ')}`);
-        } else {
-          message.success('Resume uploaded and analyzed successfully!');
-        }
-
-        // Reload file list from MongoDB
-        if (showFileList && user && user.role === 'Interviewee') {
-          await loadUserFiles();
-        }
-      } else {
-        loadingMessage();
-        message.error('Failed to parse resume. File is stored in database but could not be analyzed.');
-      }
     } catch (error) {
       message.error(error.message || 'Error processing resume');
       console.error('Resume upload error:', error);
@@ -158,26 +197,7 @@ const ResumeUpload = ({ onResumeUploaded, loading = false, showFileList = true }
     return false; // Prevent default upload behavior
   };
 
-  const handleDeleteFile = async (fileId, fileName) => {
-    try {
-      const result = await fileUploadService.deleteFile(fileId);
-      if (result.success) {
-        message.success(`${fileName} deleted successfully`);
-        await loadUserFiles(); // Reload file list
-      }
-    } catch (error) {
-      message.error(error.message || 'Failed to delete file');
-    }
-  };
 
-  const handleDownloadFile = async (fileId, fileName) => {
-    try {
-      await fileUploadService.downloadFile(fileId, fileName);
-      message.success(`${fileName} downloaded`);
-    } catch (error) {
-      message.error(error.message || 'Failed to download file');
-    }
-  };
 
   const uploadProps = {
     name: 'resume',
@@ -203,7 +223,31 @@ const ResumeUpload = ({ onResumeUploaded, loading = false, showFileList = true }
 
   return (
     <div className="resume-upload">
-      <Card title="Resume Upload" style={{ marginBottom: showFileList ? '20px' : '0' }}>
+      <Card 
+        title="Resume Upload"
+        extra={
+          user && user.role === 'Interviewee' && (
+            <Popconfirm
+              title="Delete All Files"
+              description="Are you sure you want to delete all your uploaded resume files?"
+              onConfirm={handleClearAllFiles}
+              okText="Yes, Delete All"
+              cancelText="Cancel"
+              okType="danger"
+            >
+              <Button 
+                icon={<DeleteOutlined />} 
+                danger 
+                size="small"
+                loading={isDeleting}
+                disabled={isUploading}
+              >
+                Clear Files
+              </Button>
+            </Popconfirm>
+          )
+        }
+      >
         <Dragger {...uploadProps}>
           <p className="ant-upload-drag-icon">
             <InboxOutlined style={{ fontSize: '48px', color: '#1890ff' }} />
@@ -231,87 +275,34 @@ const ResumeUpload = ({ onResumeUploaded, loading = false, showFileList = true }
             />
           </div>
         )}
+
+        {/* File List */}
+        {showFileList && userFiles.length > 0 && (
+          <div style={{ marginTop: '16px' }}>
+            <Text strong>Uploaded Files:</Text>
+            <div style={{ marginTop: '8px' }}>
+              {userFiles.map((file, index) => (
+                <div key={file._id || index} style={{ 
+                  display: 'flex', 
+                  justifyContent: 'space-between', 
+                  alignItems: 'center',
+                  padding: '8px',
+                  backgroundColor: '#f5f5f5',
+                  borderRadius: '4px',
+                  marginBottom: '4px'
+                }}>
+                  <Text>{file.originalName || file.filename}</Text>
+                  <Text type="secondary" style={{ fontSize: '12px' }}>
+                    {new Date(file.uploadedAt || file.uploadDate).toLocaleDateString()}
+                  </Text>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </Card>
 
-      {showFileList && (
-        <Card 
-          title="Your Uploaded Files" 
-          loading={loadingFiles}
-          extra={
-            <Button 
-              type="link" 
-              onClick={loadUserFiles}
-              size="small"
-            >
-              Refresh
-            </Button>
-          }
-        >
-          {uploadedFiles.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '20px' }}>
-              <Text type="secondary">No files uploaded yet</Text>
-            </div>
-          ) : (
-            <List
-              dataSource={uploadedFiles}
-              renderItem={(file) => (
-                <List.Item
-                  actions={[
-                    <Button
-                      key="preview"
-                      type="link"
-                      icon={<EyeOutlined />}
-                      onClick={() => window.open(file.previewUrl, '_blank')}
-                      size="small"
-                    >
-                      Preview
-                    </Button>,
-                    <Button
-                      key="download"
-                      type="link"
-                      icon={<DownloadOutlined />}
-                      onClick={() => handleDownloadFile(file._id, file.originalName)}
-                      size="small"
-                    >
-                      Download
-                    </Button>,
-                    <Button
-                      key="delete"
-                      type="link"
-                      danger
-                      icon={<DeleteOutlined />}
-                      onClick={() => handleDeleteFile(file._id, file.originalName)}
-                      size="small"
-                    >
-                      Delete
-                    </Button>
-                  ]}
-                >
-                  <List.Item.Meta
-                    title={
-                      <Space>
-                        <Text>{file.originalName}</Text>
-                        <Tag color="blue">{file.category}</Tag>
-                      </Space>
-                    }
-                    description={
-                      <Space direction="vertical" size="small">
-                        <Text type="secondary" style={{ fontSize: '12px' }}>
-                          {fileUploadService.formatFileSize(file.size)} • 
-                          Uploaded {new Date(file.uploadedAt).toLocaleDateString()}
-                        </Text>
-                        {file.description && (
-                          <Text style={{ fontSize: '12px' }}>{file.description}</Text>
-                        )}
-                      </Space>
-                    }
-                  />
-                </List.Item>
-              )}
-            />
-          )}
-        </Card>
-      )}
+
 
       {/* Data Collection Modal */}
       <DataCollectionModal

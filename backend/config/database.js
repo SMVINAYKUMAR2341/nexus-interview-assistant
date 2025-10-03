@@ -9,11 +9,12 @@ class DatabaseConnection {
 
   async connect() {
     try {
-      // Connect to MongoDB
+      // Connect to MongoDB with more lenient timeout settings
       this.connection = await mongoose.connect(process.env.MONGODB_URI, {
         maxPoolSize: 10, // Maximum number of connections in the connection pool
-        serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
+        serverSelectionTimeoutMS: 30000, // Increased timeout - wait 30 seconds
         socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
+        connectTimeoutMS: 30000, // Increased connection timeout
       });
 
       console.log('✅ Connected to MongoDB successfully');

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const deepseekService = require('../services/deepseekService');
+const aiAnalyzer = require('../services/aiAnalyzer');
 const { authenticate } = require('../middleware/auth');
 
 /**
@@ -80,7 +81,7 @@ router.post('/generate-questions', authenticate, async (req, res) => {
       });
     }
 
-    const result = await deepseekService.generateQuestions(
+    const result = await aiAnalyzer.generateQuestions(
       role,
       difficulty,
       count || 1
@@ -149,13 +150,132 @@ router.get('/health', authenticate, async (req, res) => {
     res.json({
       success: true,
       configured: true,
-      message: 'DeepSeek AI service is configured and ready'
+      message: 'Perplexity AI service is configured and ready'
     });
   } catch (error) {
     res.status(500).json({
       success: false,
       message: 'Health check failed',
       error: error.message
+    });
+  }
+});
+
+/**
+ * POST /api/ai/chatbot
+ * Get chatbot response using Perplexity AI
+ */
+router.post('/chatbot', authenticate, async (req, res) => {
+  try {
+    const { message, userRole = 'Interviewee', conversationHistory = [] } = req.body;
+
+    if (!message || message.trim().length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Message is required'
+      });
+    }
+
+    const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
+    const PERPLEXITY_API_URL = 'https://api.perplexity.ai/chat/completions';
+
+    if (!PERPLEXITY_API_KEY) {
+      return res.status(500).json({
+        success: false,
+        message: 'Perplexity API key not configured'
+      });
+    }
+
+    // System prompts for different user roles
+    const systemPrompts = {
+      Interviewer: `You are an AI assistant helping recruiters and interviewers use the Crisp Interview Assistant platform.
+
+Your role:
+- Help interviewers understand the platform features
+- Provide guidance on evaluating candidates effectively
+- Explain how to interpret AI summaries and scores
+- Share best practices for conducting interviews
+
+Tone: Professional, helpful, and informative
+Style: Clear, concise responses with actionable advice`,
+
+      Interviewee: `You are an AI assistant helping candidates prepare for and complete their interviews on the Crisp Interview Assistant platform.
+
+Your role:
+- Guide candidates through the interview process
+- Provide encouragement and reduce interview anxiety
+- Explain how the platform works
+- Share tips for answering technical questions effectively
+
+Tone: Friendly, encouraging, and supportive
+Style: Warm and conversational, use emojis to be approachable`
+    };
+
+    const systemPrompt = systemPrompts[userRole] || systemPrompts.Interviewee;
+
+    // Build context from conversation history
+    let contextPrompt = `User Role: ${userRole}\n\n`;
+    
+    if (conversationHistory.length > 0) {
+      contextPrompt += 'Recent Conversation:\n';
+      conversationHistory.slice(-6).forEach(msg => {
+        contextPrompt += `${msg.type === 'user' ? 'User' : 'AI'}: ${msg.text}\n`;
+      });
+      contextPrompt += '\n';
+    }
+
+    contextPrompt += `User's Question: ${message}\n\nProvide a helpful, contextual response.`;
+
+    const axios = require('axios');
+    
+    const response = await axios.post(PERPLEXITY_API_URL, {
+      model: 'llama-3.1-sonar-small-128k-chat',
+      messages: [
+        {
+          role: 'system',
+          content: systemPrompt
+        },
+        {
+          role: 'user',
+          content: contextPrompt
+        }
+      ],
+      temperature: 0.8,
+      max_tokens: 512
+    }, {
+      headers: {
+        'Authorization': `Bearer ${PERPLEXITY_API_KEY}`,
+        'Content-Type': 'application/json',
+      }
+    });
+
+    if (response.data.choices && response.data.choices[0] && response.data.choices[0].message) {
+      const chatbotMessage = response.data.choices[0].message.content;
+      
+      res.json({
+        success: true,
+        message: chatbotMessage,
+        model: 'llama-3.1-sonar-small-128k-chat',
+        userRole
+      });
+    } else {
+      throw new Error('Invalid response format from Perplexity API');
+    }
+
+  } catch (error) {
+    console.error('Chatbot API Error:', error);
+    
+    // Provide fallback responses
+    const fallbackResponses = {
+      Interviewer: "I'm here to help you with the interview platform! You can ask me about evaluating candidates, understanding AI summaries, or best practices for conducting interviews. How can I assist you today?",
+      Interviewee: "Hi there! 😊 I'm here to help you prepare for your interview. You can ask me about the interview process, tips for answering questions, or how the platform works. What would you like to know?"
+    };
+
+    res.json({
+      success: true,
+      message: fallbackResponses[req.body.userRole] || fallbackResponses.Interviewee,
+      model: 'fallback',
+      note: 'Using fallback response due to API unavailability'
     });
   }
 });

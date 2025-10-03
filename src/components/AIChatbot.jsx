@@ -8,8 +8,13 @@ import {
   WechatOutlined
 } from '@ant-design/icons';
 import { useAuthStore } from '../store/useAuthStore';
-import { getChatbotResponse } from '../lib/geminiService';
+import axios from 'axios';
 import styles from './AIChatbot.module.css';
+
+// Backend API configuration
+const API_URL = import.meta.env.PROD 
+  ? '/api' 
+  : import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
 
 const AIChatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -148,25 +153,31 @@ const AIChatbot = () => {
     setIsTyping(true);
 
     try {
-      // Get AI response from Gemini
-      const aiText = await getChatbotResponse(
-        userMessageText, 
-        user?.role || 'Interviewee',
-        messages
-      );
+      // Get AI response from backend Perplexity API
+      const token = localStorage.getItem('token');
+      const response = await axios.post(`${API_URL}/ai/chatbot`, {
+        message: userMessageText,
+        userRole: user?.role || 'Interviewee',
+        conversationHistory: messages.slice(-6) // Send last 6 messages for context
+      }, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
 
       const aiResponse = {
         id: Date.now() + 1,
         type: 'bot',
-        text: aiText,
+        text: response.data.message || 'I\'m here to help! Could you please rephrase your question?',
         timestamp: new Date().toISOString()
       };
 
       setMessages(prev => [...prev, aiResponse]);
     } catch (error) {
-      console.error('Error getting AI response:', error);
+      console.error('Error getting AI response from backend:', error);
       
-      // Fallback to keyword-based response if Gemini fails
+      // Fallback to keyword-based response if backend fails
       const fallbackResponse = {
         id: Date.now() + 1,
         type: 'bot',

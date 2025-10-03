@@ -22,7 +22,7 @@ const ResumeAnalysis = ({ candidate }) => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [aiATSData, setAiATSData] = useState(null);
 
-  // Calculate ATS Score using DeepSeek AI when candidate changes
+  // Calculate ATS Score using Perplexity AI when candidate changes
   useEffect(() => {
     const calculateATS = async () => {
       if (!candidate || !candidate.resumeText) return;

@@ -1,4 +1,4 @@
-// AI service using DeepSeek API for accurate evaluations
+// AI service using Perplexity API for accurate evaluations
 import axios from 'axios';
 
 // In production (Vercel), use relative URLs to work with the same domain
@@ -402,10 +402,10 @@ export const generateInterviewSummary = (candidate) => {
   };
 };
 
-// ==================== DeepSeek AI Integration ====================
+// ==================== Perplexity AI Integration ====================
 
 /**
- * Calculate ATS Score using DeepSeek AI
+ * Calculate ATS Score using Perplexity AI
  * @param {string} resumeText - Resume text content
  * @param {string} jobDescription - Optional job description
  * @returns {Promise<Object>} ATS score and analysis
@@ -439,7 +439,7 @@ export const calculateATSScoreWithAI = async (resumeText, jobDescription = '') =
       },
       strengths: ['Resume uploaded successfully'],
       weaknesses: ['AI analysis temporarily unavailable'],
-      recommendations: ['Please ensure DeepSeek API is configured'],
+      recommendations: ['Please ensure Perplexity API is configured'],
       extractedSkills: [],
       experienceYears: 0,
       matchPercentage: 0
@@ -448,7 +448,7 @@ export const calculateATSScoreWithAI = async (resumeText, jobDescription = '') =
 };
 
 /**
- * Evaluate answer using DeepSeek AI
+ * Evaluate answer using Perplexity AI
  * @param {string} question - The question
  * @param {string} answer - The candidate's answer
  * @param {Object} questionData - Question metadata
@@ -486,7 +486,7 @@ export const evaluateAnswerWithAI = async (answer, questionData, timeUsed, timeL
 };
 
 /**
- * Generate interview summary using DeepSeek AI
+ * Generate interview summary using Perplexity AI
  * @param {Object} candidate - Candidate data
  * @param {Array} answers - All answers
  * @returns {Promise<Object>} Interview summary
@@ -530,7 +530,7 @@ export const generateInterviewSummaryWithAI = async (candidate, answers) => {
 };
 
 /**
- * Check if DeepSeek AI is configured
+ * Check if Perplexity AI is configured
  * @returns {Promise<boolean>} Configuration status
  */
 export const checkAIHealth = async () => {

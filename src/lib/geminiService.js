@@ -1,18 +1,18 @@
-// DeepSeek AI Service for Interview Assistant (via OpenRouter)
+// Perplexity AI Service for Interview Assistant
 // Handles AI-powered question generation, answer evaluation, and chatbot conversations
 
-const OPENROUTER_API_KEY = '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';
-const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
+const PERPLEXITY_API_KEY = import.meta.env.VITE_PERPLEXITY_API_KEY;
+const PERPLEXITY_API_URL = 'https://api.perplexity.ai/v1/chat/completions';
 // Using multiple models for fallback
 const AI_MODELS = [
-  'deepseek/deepseek-r1-distill-llama-70b:free',
-  'deepseek/deepseek-chat:free',
-  'google/gemini-2.0-flash-exp:free',
-  'meta-llama/llama-3.1-8b-instruct:free'
+  'llama-3.1-sonar-large-128k-online',
+  'llama-3.1-sonar-small-128k-online',
+  'llama-3.1-sonar-large-128k-chat',
+  'llama-3.1-sonar-small-128k-chat'
 ];
 
-if (!OPENROUTER_API_KEY) {
-  console.error('OpenRouter API key is not configured');
+if (!PERPLEXITY_API_KEY) {
+  console.error('Perplexity API key is not configured');
 }
 
 // System prompts for different contexts
@@ -211,13 +211,11 @@ const callDeepSeekAPI = async (systemPrompt, userPrompt, temperature = 0.7, maxT
   // Try each model in order
   for (const model of AI_MODELS) {
     try {
-      const response = await fetch(OPENROUTER_API_URL, {
+      const response = await fetch(PERPLEXITY_API_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-          'HTTP-Referer': 'https://crisp-interview-assistant.app',
-          'X-Title': 'Crisp Interview Assistant'
+          'Authorization': `Bearer ${PERPLEXITY_API_KEY}`
         },
         body: JSON.stringify({
           model: model,
@@ -569,11 +567,11 @@ Return ONLY valid JSON with this exact structure:
  * @returns {Promise<string>} AI response
  */
 export const getChatbotResponse = async (userMessage, userRole = 'Interviewee', conversationHistory = []) => {
-  // Check if API key is available
-  if (!OPENROUTER_API_KEY) {
-    console.warn('OpenRouter API key not found, using fallback responses');
-    return getFallbackChatbotResponse(userMessage, userRole);
-  }
+  // Use Perplexity API for chatbot responses
+  const PERPLEXITY_API_KEY = import.meta.env.VITE_PERPLEXITY_API_KEY;
+  const PERPLEXITY_API_URL = 'https://api.perplexity.ai/chat/completions';
+
+  console.log('🤖 Getting chatbot response from Perplexity API...', { userMessage, userRole });
 
   try {
     const systemPrompt = userRole === 'Interviewer' 
@@ -593,11 +591,49 @@ export const getChatbotResponse = async (userMessage, userRole = 'Interviewee', 
 
     contextPrompt += `User's Question: ${userMessage}\n\nProvide a helpful, contextual response.`;
 
-    const response = await callDeepSeekAPI(systemPrompt, contextPrompt, 0.8, 512);
+    const response = await fetch(PERPLEXITY_API_URL, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${PERPLEXITY_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'llama-3.1-sonar-small-128k-chat',
+        messages: [
+          {
+            role: 'system',
+            content: systemPrompt
+          },
+          {
+            role: 'user',
+            content: contextPrompt
+          }
+        ],
+        temperature: 0.8,
+        max_tokens: 512
+      })
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Perplexity API error:', response.status, errorText);
+      throw new Error(`Perplexity API error: ${response.status} - ${errorText}`);
+    }
+
+    const data = await response.json();
+    console.log('✅ Perplexity API response received:', data);
     
-    return response || 'I\'m here to help! Could you please rephrase your question?';
+    if (data.choices && data.choices[0] && data.choices[0].message) {
+      const responseText = data.choices[0].message.content || 'I\'m here to help! Could you please rephrase your question?';
+      console.log('🎯 Chatbot response:', responseText);
+      return responseText;
+    } else {
+      console.error('Invalid response format from Perplexity API:', data);
+      throw new Error('Invalid response format from Perplexity API');
+    }
   } catch (error) {
-    console.error('Error getting chatbot response from DeepSeek:', error);
+    console.error('Error getting chatbot response from Perplexity:', error);
+    console.log('🔄 Using fallback response instead');
     // Use fallback instead of error message
     return getFallbackChatbotResponse(userMessage, userRole);
   }

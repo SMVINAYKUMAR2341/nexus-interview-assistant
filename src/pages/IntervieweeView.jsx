@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Card, Input, Button, Form, message, Space, Typography, Divider } from 'antd';
-import { SendOutlined, PauseOutlined, PlayCircleOutlined, LoadingOutlined, RocketOutlined, ThunderboltOutlined } from '@ant-design/icons';
+import { Card, Input, Button, Form, message, Space, Typography, Divider, Dropdown, Modal } from 'antd';
+import { SendOutlined, PauseOutlined, PlayCircleOutlined, LoadingOutlined, RocketOutlined, ThunderboltOutlined, MoreOutlined, EyeOutlined, DeleteOutlined, UploadOutlined, FileTextOutlined } from '@ant-design/icons';
 import { useInterviewStore } from '../store/useInterviewStore';
 import { generateQuestion, evaluateAnswer } from '../lib/aiService';
-import { generateInterviewQuestion, evaluateAnswer as evaluateAnswerGemini } from '../lib/geminiService';
+import { evaluateAnswer as evaluateAnswerGemini } from '../lib/geminiService';
+import axios from 'axios';
 import { checkMissingFields, validateEmail, validatePhone, validateName } from '../lib/resumeParser';
 import ResumeUpload from '../components/ResumeUpload';
 import QuizInterface from '../components/QuizInterface';
@@ -14,6 +15,86 @@ import '../styles/IntervieweeNeon.css';
 
 const { TextArea } = Input;
 const { Title, Text } = Typography;
+
+// Backend API configuration
+const API_URL = import.meta.env.PROD 
+  ? '/api' 
+  : import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+
+// Generate interview question using backend Perplexity service
+const generateInterviewQuestion = async (difficulty = 'medium', questionIndex = 0, role = 'Full Stack Developer') => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axios.post(`${API_URL}/ai/generate-questions`, {
+      difficulty,
+      count: 1,
+      role,
+      questionIndex
+    }, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (response.data && response.data.questions && response.data.questions[0]) {
+      return response.data.questions[0];
+    } else {
+      throw new Error('No question returned from API');
+    }
+  } catch (error) {
+    console.error('Error generating question with backend:', error);
+    
+    // Fallback to offline questions
+    const fallbackQuestions = {
+      easy: [
+        {
+          id: 'easy_fallback_1',
+          question: "What is the difference between let, const, and var in JavaScript?",
+          category: "JavaScript Fundamentals",
+          timeLimit: 20
+        },
+        {
+          id: 'easy_fallback_2', 
+          question: "Explain what JSX is in React and why it's useful.",
+          category: "React Basics",
+          timeLimit: 20
+        }
+      ],
+      medium: [
+        {
+          id: 'medium_fallback_1',
+          question: "Explain how React's virtual DOM works and why it's beneficial for performance.",
+          category: "React",
+          timeLimit: 60
+        },
+        {
+          id: 'medium_fallback_2',
+          question: "What are the differences between SQL and NoSQL databases? Give examples of each.",
+          category: "Database Design",
+          timeLimit: 60
+        }
+      ],
+      hard: [
+        {
+          id: 'hard_fallback_1',
+          question: "Design a rate limiting system that can handle millions of requests per second. Explain your approach and the trade-offs involved.",
+          category: "System Design",
+          timeLimit: 120
+        },
+        {
+          id: 'hard_fallback_2',
+          question: "How would you implement real-time collaboration features (like Google Docs) in a web application? Discuss the technical challenges and solutions.",
+          category: "System Design",
+          timeLimit: 120
+        }
+      ]
+    };
+
+    const questions = fallbackQuestions[difficulty] || fallbackQuestions.medium;
+    return questions[questionIndex % questions.length];
+  }
+};
 
 const IntervieweeView = () => {
   console.log('🎯 IntervieweeView component rendering');
@@ -398,16 +479,16 @@ const IntervieweeView = () => {
   const renderContent = () => {
     if (!activeCandidate) {
       return (
-        <div className="neon-welcome-card" style={{ maxWidth: '700px', margin: '100px auto' }}>
+        <div className="neon-welcome-card">
           <div style={{ marginBottom: '24px', fontSize: '48px' }}>
             🚀
           </div>
           <h2>Welcome to Crisp AI Interview Assistant!</h2>
-          <p style={{ marginBottom: '32px', fontSize: '16px', color: '#94a3b8' }}>
+          <p>
             Experience the future of technical interviews with our advanced AI-powered system.<br/>
             Upload your resume and let's begin your journey to success!
           </p>
-          <div style={{ marginTop: '32px' }}>
+          <div style={{ marginTop: '24px' }}>
             <ResumeUpload onResumeUploaded={handleResumeUploaded} />
           </div>
         </div>
