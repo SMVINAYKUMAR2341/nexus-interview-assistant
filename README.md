@@ -1,5 +1,5 @@
 # 🎯 CRISP Interview Assistant - Project Structure
-Screenshots
+
 # 📸 Project Screenshots
 
 ![Screenshot 1](https://raw.githubusercontent.com/SMVINAYKUMAR2341/nexus-interview-assistant/main/{1B5684B2-40B7-47D1-A91F-73FD9603A550}.png)
